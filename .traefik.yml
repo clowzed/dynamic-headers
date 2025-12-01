@@ -1,0 +1,55 @@
+displayName: Dynamic headers plugin
+type: middleware
+iconPath: .assets/icon.png
+
+summary: "Changes headers using regex with sub expressions utilizing different targets"
+
+testData:
+  Rules:
+    # Example 1: Modify host-based header
+    - headerName: "X-Processed-Host"
+      regex: "(?P<subdomain>[^.]+)\\.example\\.com"
+      format: "processed-${subdomain}.internal"
+      target: "host"
+
+    # Example 2: Extract version from path
+    - headerName: "X-API-Version"
+      regex: "/v(?P<version>\\d+)/"
+      format: "v${version}"
+      target: "path"
+
+    # Example 3: Modify based on query parameters
+    - headerName: "X-Debug-Mode"
+      regex: "debug=(?P<debug>true|false)"
+      format: "debug-${debug}"
+      target: "query"
+
+    # Example 4: Extract browser info from User-Agent
+    - headerName: "X-Browser-Info"
+      regex: "(?P<browser>Chrome|Firefox|Safari)/[\\d.]+"
+      format: "detected-${browser}"
+      target: "userAgent"
+
+    # Example 5: Modify based on referer
+    - headerName: "X-Referer-Source"
+      regex: "https?://(?P<domain>[^/]+)"
+      format: "source-${domain}"
+      target: "referer"
+
+    # Example 6: Extract from custom header
+    - headerName: "X-Enhanced-Auth"
+      regex: "Bearer (?P<token>.+)"
+      format: "Enhanced ${token}"
+      target: "header:Authorization"
+
+    # Example 7: Simple method-based header
+    - headerName: "X-Request-Method"
+      regex: "(?P<method>GET|POST|PUT|DELETE)"
+      format: "method-${method}"
+      target: "method"
+
+    # Example 8: Scheme-based modification
+    - headerName: "X-Secure-Request"
+      regex: "(?P<scheme>https|http)"
+      format: "is-${scheme}"
+      target: "scheme"
