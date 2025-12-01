@@ -1,6 +1,5 @@
 displayName: Dynamic headers plugin
 type: middleware
-iconPath: .assets/icon.png
 
 summary: "Changes headers using regex with sub expressions utilizing different targets"
 

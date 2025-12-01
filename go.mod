@@ -1,3 +1,3 @@
-module github.com/clowzed/dynamic-headers-traefik-plugin
+module github.com/clowzed/dynamic-headers
 
 go 1.22

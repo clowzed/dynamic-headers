@@ -1,4 +1,3 @@
-![Logo](./.assets/icon.svg)
 
 # Dynamic Headers Plugin for Traefik
 
@@ -20,11 +19,10 @@ A powerful, regex-based HTTP header manipulation middleware for Traefik that ena
 Add the plugin to your Traefik static configuration:
 
 ```yaml
-# traefik.yml
 experimental:
   plugins:
     dynamicheaders:
-      moduleName: "github.com/your-org/dynamicheadersplugin"
+      moduleName: "github.com/clowzed/dynamic-headers"
       version: "v1.0.0"
 ```
 
@@ -34,7 +32,7 @@ services:
   traefik:
     image: traefik:v3.0
     command:
-      - "--experimental.plugins.dynamicheaders.moduleName=github.com/clowzed/dynamic-headers-plugin"
+      - "--experimental.plugins.dynamicheaders.moduleName=github.com/clowzed/dynamic-headers"
       - "--experimental.plugins.dynamicheaders.version=v1.0.0"
 ```
 
@@ -171,10 +169,3 @@ format: "User ${user_id} performed ${action}"
 The plugin uses Go's standard regex engine.
 Full syntax reference:
 [Go regexp package](https://pkg.go.dev/regexp)
-
-## ⚠️ Limitations & Considerations
-
-- Performance: Complex regex patterns may impact performance on high-traffic routes
-- Group Naming: Group names must be valid Go identifiers (letters, digits, underscores)
-- Case Sensitivity: Regex patterns are case-sensitive by default
-- Validation Order: Rules are processed in the order they're defined
