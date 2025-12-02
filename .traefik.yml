@@ -1,6 +1,9 @@
 displayName: Dynamic headers plugin
 type: middleware
 
+import: github.com/clowzed/dynamic-headers
+basePkg: dynamicheadersplugin
+
 summary: "Changes headers using regex with sub expressions utilizing different targets"
 
 testData:

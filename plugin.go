@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-// Compile regex for finding {placeholder} patterns in the format string
+// Compile regex for finding ${placeholder} patterns in the format string
 // This safely handles nested or malformed braces in the replacement process.
 var placeholderRegex = regexp.MustCompile(`\${([^}]+)}`)
 
@@ -86,20 +86,25 @@ type HeaderSettingRule struct {
 	// This field is required for all rewrite operations.
 	Regex string `json:"regex,omitempty"`
 
+	// CompiledRegex contains the compiled version of the regex pattern.
+	// This field is automatically populated during initialization.
 	CompiledRegex *regexp.Regexp `json:"-"`
 
+	// RegexGroupNames contains the names of the regex capture groups.
+	// This field is automatically populated during initialization.
 	RegexGroupNames []string `json:"-"`
 
-	// Format defines the replacement pattern for matched regex groups.
-	// Uses re2 syntax for group references (e.g., $1, $2 for capture groups, $0 for entire match).
-	// Defaults to "$0" (maintains original value) if not specified.
+	// Format defines a format string which may or not contain regex capture group references.
+	// If the format string contains regex capture group references, they must be valid and exist in the regex pattern.
+	// Header will be set to a fully formatted string.
+	// In case target does not match pattern, header will be set to default value.
 	Format string `json:"format,omitempty"`
 
 	// Target specifies where the header modification should be applied.
 	// Valid values: "request", "response", or "host" (default).
 	Target string `json:"target,omitempty"`
 
-	// Default provides a fallback value when the regex doesn't match the header value.
+	// Default provides a fallback value when the regex doesn't match the target value.
 	// If empty and no match occurs, the header remains unchanged.
 	Default string `json:"default,omitempty"`
 }
@@ -252,7 +257,7 @@ func (rule *HeaderSettingRule) GetTarget(request *http.Request) string {
 // Parameters:
 //   - pattern: Compiled regex pattern containing named capture groups
 //   - input: String to match against the regex pattern
-//   - format: Template string with {named} placeholders for group substitution
+//   - format: Template string with ${named} placeholders for group substitution
 //
 // Returns:
 //   - Formatted string with group values substituted, or empty string on error
@@ -284,7 +289,7 @@ func FormatWithGroups(pattern *regexp.Regexp, input, format string, subexpNames 
 		}
 	}
 
-	// Replace all {group} placeholders with their corresponding values
+	// Replace all ${group} placeholders with their corresponding values
 	// Unmatched placeholders will be replaced with empty strings
 	result := placeholderRegex.ReplaceAllStringFunc(format, func(placeholder string) string {
 		// Extract group name by removing surrounding braces
