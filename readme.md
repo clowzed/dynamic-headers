@@ -5,11 +5,10 @@ A powerful, regex-based HTTP header manipulation middleware for Traefik that ena
 
 ## 🚀 Features
 
-- **Dynamic Header Rewriting**: Transform header values using regex patterns with named capture groups
+- **Dynamic Header Setting/Rewriting**: Set header values using regex patterns with named capture groups
 - **Multiple Sources**: Extract values from URL, path, query, headers, and other request components
 - **Named Group Support**: Reference captured groups by name using `${groupName}` syntax
 - **Comprehensive Validation**: Pre-flight rule validation with detailed error messages
-- **Flexible Targeting**: Modify request headers, response headers, or the host header
 - **Default Values**: Graceful fallback when patterns don't match
 
 ## 📦 Installation
@@ -55,8 +54,8 @@ http:
 | Property | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `headerName` | Yes | - | Name of the header to set/modify |
-| `regex` | Yes | - | Go regex pattern with named capture groups |
-| `format` | Yes | - | Output format using `${groupName}` placeholders |
+| `regex` | Yes | - | Go regex pattern with/or without named capture groups |
+| `format` | Yes | - | Output format using/not using `${groupName}` placeholders |
 | `target` | No | `host` | Source value to match against (see targets below) |
 | `default` | No | - | Fallback value if regex doesn't match |
 
@@ -133,12 +132,6 @@ The plugin validates all rules during initialization. Common validation errors i
 - Missing required fields: headerName, regex, and format are mandatory
 - Invalid regex patterns: Must be valid Go regex syntax
 - Undefined group references: All ${groupName} in format must match named groups in regex
-- Invalid targets: Must be one of the supported target values
-Example error message:
-
-```text
-Error: rule error: format string references unknown group 'undefinedGroup'
-```
 
 ## 📝 Regex Reference
 
