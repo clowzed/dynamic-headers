@@ -14,26 +14,21 @@ A powerful, regex-based HTTP header manipulation middleware for Traefik that ena
 
 ## 📦 Installation
 
-### Static Configuration
-
-Add the plugin to your Traefik static configuration:
-
-```yaml
-experimental:
-  plugins:
-    dynamicheaders:
-      moduleName: "github.com/clowzed/dynamic-headers"
-      version: "v1.0.0"
-```
-
-Docker Compose
+### Docker Compose
 ```yaml
 services:
   traefik:
     image: traefik:v3.0
     command:
       - "--experimental.plugins.dynamicheaders.moduleName=github.com/clowzed/dynamic-headers"
-      - "--experimental.plugins.dynamicheaders.version=v1.0.0"
+      - "--experimental.plugins.dynamicheaders.version=v0.1.1"
+
+  echo:
+    image: ealen/echo-server
+    labels:
+      - "traefik.http.routers.echo.rule=PathPrefix(`/echo`)"
+      - "traefik.http.services.echo.loadbalancer.server.port=80"
+      - "traefik.http.routers.echo.middlewares=dynamicheaders"
 ```
 
 ## ⚙️ Configuration
@@ -44,15 +39,15 @@ services:
 # dynamic.yml
 http:
   middlewares:
-    dynamic-headers:
+    dynamicheaders:
       plugin:
         dynamicheaders:
           rules:
-            - headerName: "X-Processed-By"
-              regex: "(?P<service>\\w+)-(?P<env>\\w+)"
-              format: "Service: ${service} | Environment: ${env}"
-              target: "host"
-              default: "unknown-service"
+            - headerName: "X-Request-Id"
+              regex: "id=(?P<id>[a-f0-9-]+)"
+              format: "req-${id}"
+              target: "header:a"
+              default: "unknown-request"
 ```
 
 ### Rule Properties
